@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!-- saved from url=(0029)https://radio.chivengi.world/ -->
+<html lang="us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chivengi</title>
+    <meta name="description" content="Chivengi, copyright 2024 chivengisound" />
+    <meta name="author" content="chivengi" />
+    <meta name="keywords" content="chivengi" />
+    <link
+      href="https://radio.chivengi.world/ico.png"
+      type="image/x-icon"
+      rel="icon"
+    />
+    <link
+      href="https://radio.chivengi.world/ico.png"
+      type="image/x-icon"
+      rel="shortcut icon"
+    />
+    <style type="text/css">
+      @font-face {
+        font-family: "Custom-Helvetica";
+        src: url("./font/Helvetica.ttf") format("truetype");
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        font-family: "Custom-Helvetica", Helvetica, Arial, sans-serif;
+      }
+      .container {
+        max-width: 1400px;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 150px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 200px) minmax(0, 200px);
+        gap: 40px;
+        align-items: center;
+        justify-content: center;
+      }
+      .speaker {
+        width: 100%;
+      }
+      .player-col {
+        width: 100%;
+        grid-column: 1 / span 2;
+      }
+      .player {
+        display: grid;
+        grid-template-columns: 25px auto minmax(0, 300px);
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+        --progress: 0%;
+      }
+      .player-col p {
+        text-align: center;
+        margin-top: 30px;
+      }
+      #playButton,
+      #pauseButton {
+        width: auto;
+        height: 22px;
+        display: block;
+      }
+      #time {
+        padding: 4px 0 0 10px;
+        margin: 0;
+      }
+      #slider {
+        position: relative;
+        width: 100%;
+        outline: none;
+        border: none;
+        -webkit-appearance: none;
+      }
+      input[type="range"]::before {
+        position: absolute;
+        content: "";
+        top: 0;
+        left: 0;
+        width: var(--progress);
+        height: 6px;
+        background: #c8cac9;
+        cursor: pointer;
+        border-radius: 10px;
+        z-index: 1;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        position: relative;
+        height: 6px;
+        cursor: pointer;
+        background: #f4f6f5;
+        border-radius: 10px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        position: relative;
+        width: 12px;
+        height: 12px;
+        margin-top: -3px;
+        border-radius: 50%;
+        background-color: black;
+        overflow: visible;
+        cursor: pointer;
+        z-index: 3;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          padding-left: 20px;
+          padding-right: 20px;
+          padding-top: 80px;
+          grid-template-columns: auto;
+        }
+        #firstSpeaker {
+          width: 80px;
+          margin: auto;
+        }
+        #lastSpeaker {
+          display: none;
+        }
+        .player-col {
+          grid-column: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="firstSpeaker">
+        <img class="speaker" src="./img/Speaker1.png" alt="Speaker" />
+      </div>
+      <div id="lastSpeaker">
+        <img class="speaker" src="./img/Speaker2.png" alt="Speaker" />
+      </div>
+      <div class="player-col">
+        <audio
+          id="audio"
+          src="https://pub-57bc91dff9314b4fa5157e3020f7c1e6.r2.dev/mixx_231025.mp3"
+          preload="metadata"
+          loop=""
+        ></audio>
+        <div class="player">
+          <img id="playButton" src="./img/PlayButton.svg" alt="Play button" />
+          <img
+            id="pauseButton"
+            src="./img/PauseButton.png"
+            alt="Pause button"
+            style="display: none"
+          />
+          <p id="time">0:00</p>
+          <input id="slider" type="range" max="6910" value="0" />
+        </div>
+        <p>'A Visitation of Spirits'</p>
+      </div>
+    </div>
+    <script type="text/javascript">
+      const playerContainer = document.querySelector(".player");
+      const audio = document.querySelector("#audio");
+      const slider = document.querySelector("#slider");
+      const currentTimeContainer = document.getElementById("time");
+      const playButton = document.querySelector("#playButton");
+      const pauseButton = document.querySelector("#pauseButton");
+
+      const calculateTime = (secs) => {
+        const minutes = Math.floor(secs / 60);
+        const seconds = Math.floor(secs % 60);
+        const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+        return `${minutes}:${returnedSeconds}`;
+      };
+      const setSliderMax = () => {
+        slider.max = Math.floor(audio.duration);
+      };
+      const setProgress = () => {
+        playerContainer.style.setProperty(
+          "--progress",
+          (slider.value / slider.max) * 100 + "%"
+        );
+      };
+      const setAudioTime = () => {
+        audio.currentTime = slider.value;
+      };
+      slider.addEventListener("input", () => {
+        currentTimeContainer.innerHTML = calculateTime(slider.value);
+        setAudioTime();
+        setProgress();
+      });
+
+      if (audio.readyState > 0) {
+        console.log(audio.duration);
+        setSliderMax();
+      } else {
+        audio.addEventListener("loadedmetadata", () => {
+          console.log(audio.duration);
+          setSliderMax();
+        });
+      }
+
+      const fps = 5;
+      let animationFrame;
+      let isAnimating = false;
+
+      function animate() {
+        if (!isAnimating) return; // Stop animation if paused
+        slider.value = Math.floor(audio.currentTime);
+        currentTimeContainer.innerHTML = calculateTime(slider.value);
+        setProgress();
+
+        animationFrame = setTimeout(() => {
+          requestAnimationFrame(animate);
+        }, 1000 / fps);
+      }
+
+      function playAnimation() {
+        if (!isAnimating) {
+          isAnimating = true;
+          animate();
+        }
+      }
+
+      function pauseAnimation() {
+        isAnimating = false;
+        clearTimeout(animationFrame);
+      }
+
+      playButton.addEventListener("click", () => {
+        audio.play();
+        playButton.style.display = "none";
+        pauseButton.style.display = "block";
+        playAnimation();
+      });
+      pauseButton.addEventListener("click", () => {
+        audio.pause();
+        playButton.style.display = "block";
+        pauseButton.style.display = "none";
+        pauseAnimation();
+        setAudioTime();
+      });
+    </script>
+  </body>
+</html>
