@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!-- saved from url=(0029)https://radio.chivengi.world/ -->
 <html lang="us">
   <head>
@@ -18,6 +18,19 @@
       type="image/x-icon"
       rel="shortcut icon"
     />
+
+    <meta property="og:url" content="https://radio.chivengi.world" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="chivengi" />
+    <meta
+      property="og:description"
+      content="Chivengi, copyright 2024 chivengisound"
+    />
+    <meta
+      property="image"
+      content="https://radio.chivengi.world/img/site_preview.png"
+    />
+
     <style type="text/css">
       @font-face {
         font-family: "Custom-Helvetica";
@@ -180,7 +193,7 @@
       const setProgress = () => {
         playerContainer.style.setProperty(
           "--progress",
-          (slider.value / slider.max) * 100 + "%"
+          (slider.value / slider.max) * 100 + "%",
         );
       };
       const setAudioTime = () => {
